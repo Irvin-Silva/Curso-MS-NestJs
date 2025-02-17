@@ -7,9 +7,10 @@ import { Logger } from '@nestjs/common';
 async function bootstrap() {
   //const app = await NestFactory.create(AppModule);
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(AppModule, {
-    transport: Transport.TCP,
+    transport: Transport.REDIS,
     options: {
-     port: +(process.env.PORT ?? 3001)
+    host: process.env.REDIS_HOST,
+     port: +(process.env.PORT ?? 6379)
   }});
   //Realiza la validaciín para que no se pueda enviar un objeto que no cumpla con las reglas de validación
   app.useGlobalPipes(new ValidationPipe());
