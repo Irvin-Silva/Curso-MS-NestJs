@@ -6,3 +6,4 @@ export const coursesMessagePattern ={
     UPDATE_COURSE: 'UPDATE_COURSE',
     //DELETE_COURSE: 'DELETE_COURSE',
 }
+export const CHANNEL_NOTIFICATION = 'send-email';

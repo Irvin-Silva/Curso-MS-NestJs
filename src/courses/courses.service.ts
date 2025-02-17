@@ -1,6 +1,6 @@
 import { Injectable, Logger, OnApplicationBootstrap } from '@nestjs/common';
 import { ClientProxy, ClientProxyFactory, Transport } from '@nestjs/microservices';
-import { coursesMessagePattern } from '../constants';
+import { CHANNEL_NOTIFICATION, coursesMessagePattern } from '../constants';
 import axios, { Axios } from 'axios';
 import { CreateCourseDto } from './dto/create-course.dto';
 
@@ -11,10 +11,10 @@ export class CoursesService implements OnApplicationBootstrap {
   private logger = new Logger('CoursesService');
   async onApplicationBootstrap() {
     this.client = ClientProxyFactory.create({
-      transport: Transport.TCP,
+      transport: Transport.REDIS,
       options: {
         host: process.env.HOST_MICROSERVICE_COURSE,
-        port: +(process.env.HOST_MICROSERVICE_PORT || 3001)
+        port: +(process.env.HOST_MICROSERVICE_PORT || 6379)
 
       }, 
     }); 
@@ -33,9 +33,13 @@ export class CoursesService implements OnApplicationBootstrap {
     return this.client.send({ cmd: coursesMessagePattern.CREATE_COURSE }, data);
   }
   // Update a course
-  update(id: string, body) {
+  async update(id: string, body) {
     //return id and body to the microservice
-    return this.client.send({ cmd: coursesMessagePattern.UPDATE_COURSE }, { id,...body });
+    const response = await this.client.send({ cmd: coursesMessagePattern.UPDATE_COURSE }, { id,...body });
+    if (response) {
+      await this.client.emit({cmd: CHANNEL_NOTIFICATION}, {});
+    }
+    return response;
   }
   
 }
