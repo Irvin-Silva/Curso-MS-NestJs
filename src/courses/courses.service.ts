@@ -20,12 +20,13 @@ export class CoursesService {
 
   //search all courses
   async findAll():Promise<Course[]> {
-    this.logger.log('Getting all courses');
+    this.logger.log('Getting all courses', Math.random().toString());
     return this.courseRepository.find({});
   }
 
   //search a course by id
-  findOne(id: number) {
+  findOne(id: String) {
+    console.log('Get by id',id);
     return `This action returns a #${id} course`;
   }
 

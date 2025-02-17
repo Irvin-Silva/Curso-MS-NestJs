@@ -14,7 +14,7 @@ export class CoursesController {
     return this.coursesService.create(createCourseDto);
   }
 
-  @MessagePattern({cmd: 'GET_ALL_COURSES'})
+  @MessagePattern('GET_ALL_COURSES')
   async findAll():Promise<Course[]> {
     return this.coursesService.findAll();
   }
@@ -24,10 +24,11 @@ export class CoursesController {
   update(@Payload() updateCourseDto: UpdateCourseDto) {
     return this.coursesService.update(updateCourseDto.id, updateCourseDto);
   }
+  
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.coursesService.findOne(+id);
+  @MessagePattern('GET_BY_ID')
+  findOne(@Payload('id') id: string) {
+    return this.coursesService.findOne(id);
   }
 
 
